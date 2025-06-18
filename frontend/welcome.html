@@ -44,15 +44,25 @@
     </div>
 
     <script>
-        // Display username
-        const username = localStorage.getItem('username') || 'Coder';
-        document.getElementById('username').textContent = username;
-
-        // Placeholder for Start Coding button
-        document.getElementById('startCoding').addEventListener('click', function() {
-            alert('Coding area coming soon! Get ready to learn Python!');
-            // Future: Redirect to coding page, e.g., window.location.href = 'code.html';
-        });
-    </script>
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            console.log('Welcome page script loaded.');
+            const usernameElement = document.getElementById('username');
+            if (usernameElement) {
+                usernameElement.textContent = localStorage.getItem('username') || 'Coder';
+            }
+            const startCodingButton = document.getElementById('startCoding');
+            if (startCodingButton) {
+                startCodingButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Redirecting to homepage.html');
+                    window.location.href = 'homepage.html';
+                });
+            }
+        } catch (error) {
+            console.error('Script error:', error.message, error.stack);
+        }
+    });
+</script>
 </body>
 </html>
