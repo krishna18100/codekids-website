@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeKids - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #ff6b6b, #4ecdc4);
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        <h1 class="text-4xl font-bold text-center text-purple-600 mb-6 bounce">CodeKids Login</h1>
+        <div id="message" class="text-center text-red-500 mb-4 hidden"></div>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label for="username" class="block text-lg text-gray-700">Username</label>
+                <input type="text" id="username" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-purple-500" placeholder="Enter your cool username">
+            </div>
+            <div>
+                <label for="password" class="block text-lg text-gray-700">Password</label>
+                <input type="password" id="password" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-purple-500" placeholder="Enter your secret password">
+            </div>
+            <button type="submit" class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition duration-300">Log In</button>
+        </form>
+        <p class="text-center mt-4">No account? <a href="#" id="signupLink" class="text-purple-600 hover:underline">Sign up!</a></p>
+    </div>
+
+    <script>
+        // Show error message
+        function showError(message) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.classList.remove('hidden');
+        }
+
+        // Handle form submission (login)
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showError('Please enter both username and password!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                document.getElementById('message').classList.add('hidden');
+                localStorage.setItem('username', username); // Store username
+                alert(data.message);
+                window.location.href = 'welcome.html'; // Redirect to welcome page
+            } else {
+                showError(data.error);
+            }
+            } catch (error) {
+                showError('Something went wrong! Try again later.');
+            }
+        });
+
+        // Handle signup link
+        document.getElementById('signupLink').addEventListener('click', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showError('Please enter a username and password to sign up!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('message').classList.add('hidden');
+                    alert(data.message);
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                showError('Something went wrong! Try again later.');
+            }
+        });
+    </script>
+</body>
+</html>
